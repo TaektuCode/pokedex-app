@@ -1,0 +1,10 @@
+.heading {
+  position: absolute; /* Remove from normal flow for centering */
+  left: 50%; /* Move to the center horizontally */
+  transform: translateX(-50%); /* Adjust back by 50% of its width */
+  text-align: center; /* Center the text */
+}
+
+.search_bar {
+  margin-left: auto;
+}
