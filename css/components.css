@@ -1,8 +1,8 @@
 .heading {
-  position: absolute; /* Remove from normal flow for centering */
-  left: 50%; /* Move to the center horizontally */
-  transform: translateX(-50%); /* Adjust back by 50% of its width */
-  text-align: center; /* Center the text */
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
 }
 
 .search_bar {
@@ -10,7 +10,7 @@
 }
 
 .poke_card {
-  background-color: #007bff; /* Blue background */
+  background-color: #007bff;
   color: white;
   text-align: center;
   padding: 20px;
