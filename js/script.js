@@ -1,5 +1,3 @@
-// SCRIPT //
-
 // Global variables
 let offset = 0; // offset as a counter which can be increment
 const maxPokemonID = 151; // limit for just the first 151 pokemons of gen1
@@ -8,39 +6,55 @@ const loadMoreLimit = 25; // to load 25 more pokemons on "load more" button
 let allPokemons = []; // Array to store the complete dataset of 151 pokemons
 let allRenderedPokemons = []; // Array to store the currently rendered pokemons
 
-// Fetch All Pokémon Data for Search
+// Fetch All pokemon Data for Search
 const fetchAllPokemonData = async () => {
   try {
-    let response = await fetch(
+    // Fetch the names and URLs of all gen 1 pokemons from the API
+    const response = await fetch(
       `https://pokeapi.co/api/v2/pokemon?limit=${maxPokemonID}&offset=0`,
     );
     const { results } = await response.json();
-
-    const pokemonDetails = [];
-
-    // Fetch details for each pokemon
-    for (const pokemon of results) {
-      const detailsResponse = await fetch(pokemon.url);
-      const details = await detailsResponse.json();
-
-      const pokemonWithInfos = {
-        name: details.name,
-        id: details.id,
-        types: details.types.map((typeInfo) => typeInfo.type.name),
-        picture: details.sprites.front_default,
-      };
-
-      pokemonDetails.push(pokemonWithInfos);
-    }
-
-    allPokemons = pokemonDetails; // Store all pokemon data for searching
-    console.log("All pokemon data fetched for search:", allPokemons);
+    await fetchPokemonDetails(results);
   } catch (error) {
     console.error("Error fetching all pokemon data:", error);
   }
 };
 
-// Fetch pokemon Data for Rendering
+const fetchPokemonDetails = async (results) => {
+  const pokemonDetails = [];
+  // Fetch pokemon details
+  for (const pokemon of results) {
+    const details = await fetchPokemonDetailsByUrl(pokemon.url);
+    pokemonDetails.push(details);
+  }
+
+  allPokemons = pokemonDetails;
+  console.log("All pokemon data fetched for search:", allPokemons);
+};
+
+const fetchPokemonDetailsByUrl = async (url) => {
+  const response = await fetch(url);
+  const details = await response.json();
+
+  return {
+    name: details.name,
+    id: details.id,
+    types: details.types.map((typeInfo) => typeInfo.type.name),
+    picture: details.sprites.front_default,
+    weight: details.weight / 10, // convert weight to kg
+    height: details.height * 100, // height in cm
+    abilities: details.abilities.map((abilityInfo) => abilityInfo.ability.name),
+    stats: {
+      hp: details.stats.find((stat) => stat.stat.name === "hp")?.base_stat,
+      attack: details.stats.find((stat) => stat.stat.name === "attack")
+        ?.base_stat,
+      defense: details.stats.find((stat) => stat.stat.name === "defense")
+        ?.base_stat,
+    },
+  };
+};
+
+// Fetch pokemon Data for rendering
 const getPokemonData = async function (limit, offset) {
   try {
     if (offset >= maxPokemonID) {
@@ -49,35 +63,29 @@ const getPokemonData = async function (limit, offset) {
     }
 
     const pokemonLimit = Math.min(limit, maxPokemonID - offset);
-
-    let response = await fetch(
-      `https://pokeapi.co/api/v2/pokemon?limit=${pokemonLimit}&offset=${offset}`,
-    );
-    const { results } = await response.json();
-
-    const pokemonDetails = [];
-
-    for (const pokemon of results) {
-      const detailsResponse = await fetch(pokemon.url);
-      const details = await detailsResponse.json();
-
-      const pokemonWithInfos = {
-        name: details.name,
-        id: details.id,
-        types: details.types.map((typeInfo) => typeInfo.type.name),
-        picture: details.sprites.front_default,
-      };
-
-      pokemonDetails.push(pokemonWithInfos);
-    }
-
+    const response = await fetchPokemonData(pokemonLimit, offset);
+    const pokemonDetails = await processPokemonData(response.results);
     allRenderedPokemons = [...allRenderedPokemons, ...pokemonDetails];
     console.log("Rendered pokemon:", allRenderedPokemons);
-
     renderPokemonCards(pokemonDetails, offset === 0);
   } catch (error) {
     console.error("Error fetching pokemon data:", error);
   }
+};
+
+const fetchPokemonData = async (pokemonLimit, offset) => {
+  return await fetch(
+    `https://pokeapi.co/api/v2/pokemon?limit=${pokemonLimit}&offset=${offset}`,
+  ).then((res) => res.json());
+};
+
+const processPokemonData = async (results) => {
+  const pokemonDetails = [];
+  for (const pokemon of results) {
+    const details = await fetchPokemonDetailsByUrl(pokemon.url);
+    pokemonDetails.push(details);
+  }
+  return pokemonDetails;
 };
 
 // Render pokemon Cards
@@ -90,35 +98,156 @@ const renderPokemonCards = (pokemonDetails, clearContainer = false) => {
 
   let pokemonHTML = "";
   pokemonDetails.forEach((pokemon) => {
+    // Generate HTML for each pokemon card
     pokemonHTML += getPokemonCard(pokemon);
   });
 
-  container.innerHTML += pokemonHTML;
+  container.innerHTML += pokemonHTML; // Add pokemon cards to container
+  addCardEventListeners(); // Add click event listeners to cards
 };
 
-// Handle Search (Search All pokemon)
-const handleSearch = (event) => {
-  const searchInput = event.target.value.toLowerCase();
+const addCardEventListeners = () => {
+  const cards = document.querySelectorAll(".poke_card");
+  cards.forEach((card) => {
+    // Add click event to each card to show pokemon details
+    card.addEventListener("click", () => {
+      const pokemonId = getPokemonIdFromCard(card.id);
+      showPokemonDetails(pokemonId);
+    });
+  });
+};
 
-  // Check if input has fewer than 3 characters
+const getPokemonIdFromCard = (cardId) => {
+  // Get pokemon ID from card ID
+  const pokemonIdStr = cardId.replace("pokemon-", "");
+  const pokemonId = parseInt(pokemonIdStr, 10);
+  return pokemonId;
+};
+
+// Handle Search (Search All pokemons)
+const handleSearch = (event) => {
+  // Get input value
+  const searchInput = event.target.value.toLowerCase();
+  // If input is less than 3 characters, show all rendered Pokémon
   if (searchInput.length < 3) {
-    // Re-render currently displayed pokemon if search is too short
     renderPokemonCards(allRenderedPokemons, true);
     return;
   }
 
+  // Filter pokemons based on search input
   const filteredPokemon = allPokemons.filter((pokemon) =>
     pokemon.name.toLowerCase().startsWith(searchInput),
   );
   console.log("Search Results:", filteredPokemon);
+  // Render filtered pokemons
+  renderPokemonCards(filteredPokemon, true);
+};
 
-  renderPokemonCards(filteredPokemon, true); // Clear container and render search results
+// Show pokemon details in overlay
+const showPokemonDetails = (pokemonId) => {
+  // Find pokemon by ID
+  const pokemon = allPokemons.find((poke) => poke.id === pokemonId);
+
+  // Remove existing overlays before adding the new one
+  const existingOverlay = document.getElementById("overlay");
+  if (existingOverlay) {
+    existingOverlay.remove();
+  }
+
+  const overlayHtml = getPokemonOverlay(pokemon, pokemonId);
+  document.body.insertAdjacentHTML("beforeend", overlayHtml); // Add overlay to DOM
+  document.body.style.overflow = "hidden"; // Disable scrolling
+
+  // Set up event listeners for the NEW overlay
+  setupOverlayEventListeners(pokemonId);
+};
+
+const setupOverlayEventListeners = (pokemonId) => {
+  const overlay = document.getElementById("overlay");
+  setupCloseOverlayButton(overlay);
+  setupNextPreviousButtons(overlay, pokemonId); // Next/Previous buttons
+  setupOverlayClickToClose(overlay); // Close overlay on click outside card
+  setupTabSwitching(); // Add event listener for tabs
+};
+
+const setupTabSwitching = () => {
+  // Tabs for pokemon details
+  const aboutTab = document.getElementById("aboutTab");
+  const baseStatsTab = document.getElementById("baseStatsTab");
+
+  const aboutTabContent = document.getElementById("aboutTabContent");
+  const baseStatsTabContent = document.getElementById("baseStatsTabContent");
+
+  aboutTab.addEventListener("click", () => {
+    // Switch to "About" tab
+    switchTab(aboutTab, baseStatsTab, aboutTabContent, baseStatsTabContent);
+  });
+
+  baseStatsTab.addEventListener("click", () => {
+    // Switch to "Base Stats" tab
+    switchTab(baseStatsTab, aboutTab, baseStatsTabContent, aboutTabContent);
+  });
+};
+
+const switchTab = (activeTab, inactiveTab, activeContent, inactiveContent) => {
+  // Switch active/inactive tabs
+  activeTab.classList.add("active");
+  inactiveTab.classList.remove("active");
+  activeContent.classList.add("active");
+  inactiveContent.classList.remove("active");
+};
+
+const setupCloseOverlayButton = (overlay) => {
+  const closeOverlayButton = overlay.querySelector("#closeOverlay");
+  closeOverlayButton.addEventListener("click", () => {
+    // Close overlay and enable scrolling
+    overlay.remove();
+    document.body.style.overflow = "";
+  });
+};
+
+const setupNextPreviousButtons = (overlay, pokemonId) => {
+  const nextButton = overlay.querySelector("#nextPokemon");
+  const prevButton = overlay.querySelector("#prevPokemon");
+
+  nextButton.addEventListener("click", () => {
+    // Show details for the next pokemon in overlay
+    const nextPokemonId = pokemonId + 1;
+    if (nextPokemonId <= maxPokemonID) {
+      showPokemonDetails(nextPokemonId);
+    }
+  });
+
+  prevButton.addEventListener("click", () => {
+    // Show details for the previous pokemon in overlay
+    const prevPokemonId = pokemonId - 1;
+    if (prevPokemonId > 0) {
+      showPokemonDetails(prevPokemonId);
+    }
+  });
+};
+
+const setupOverlayClickToClose = (overlay) => {
+  // Close overlay when clicking outside of the card
+  overlay.addEventListener("click", (e) => {
+    if (e.target === overlay) {
+      overlay.remove();
+      document.body.style.overflow = ""; //enable scrolling
+    }
+  });
+
+  const overlayContent = document.getElementById("overlayContent");
+  if (overlayContent) {
+    overlayContent.addEventListener("click", (e) => {
+      e.stopPropagation(); // Dont close the overlay when clicking inside content
+    });
+  }
 };
 
 // Wait for the DOM content to load
 document.addEventListener("DOMContentLoaded", async () => {
-  await fetchAllPokemonData(); // Fetch all 151 pokemon for searching
-  getPokemonData(initialLimit, offset); // Fetch the first 16 pokemon for rendering
+  await fetchAllPokemonData();
+  getPokemonData(initialLimit, offset);
   offset = initialLimit;
 
   const loadMoreButton = document.getElementById("loadMore");

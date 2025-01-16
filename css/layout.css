@@ -6,6 +6,10 @@ body {
   flex-direction: column;
 }
 
+body.no-scroll {
+  overflow: hidden;
+}
+
 header {
   min-height: 7rem;
   background-color: var(--primary-color);

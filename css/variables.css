@@ -9,3 +9,58 @@
   --font-primary: "Roboto", sans-serif;
   --font-secondary: "Press Start 2P", cursive;
 }
+
+.fire-bg {
+  background-color: #f44336;
+} /* Red */
+.water-bg {
+  background-color: #2196f3;
+} /* Blue */
+.grass-bg {
+  background-color: #4caf50;
+} /* Green */
+.electric-bg {
+  background-color: #ffeb3b;
+} /* Yellow */
+.psychic-bg {
+  background-color: #9c27b0;
+} /* Purple */
+.ice-bg {
+  background-color: #03a9f4;
+} /* Light Blue */
+.dragon-bg {
+  background-color: #673ab7;
+} /* Deep Purple */
+.dark-bg {
+  background-color: #212121;
+} /* Dark Gray */
+.fairy-bg {
+  background-color: #f06292;
+} /* Light Pink */
+.normal-bg {
+  background-color: #9e9e9e;
+} /* Gray */
+.bug-bg {
+  background-color: #8bc34a;
+} /* Light Green */
+.ghost-bg {
+  background-color: #9e9e9e;
+} /* Gray */
+.fighting-bg {
+  background-color: #e91e63;
+} /* Pink */
+.poison-bg {
+  background-color: #9c27b0;
+} /* Purple */
+.rock-bg {
+  background-color: #607d8b;
+} /* Slate Gray */
+.ground-bg {
+  background-color: #795548;
+} /* Brown */
+.steel-bg {
+  background-color: #607d8b;
+} /* Steel Gray */
+.flying-bg {
+  background-color: #00bcd4;
+} /* Cyan */
