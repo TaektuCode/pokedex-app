@@ -11,56 +11,91 @@
 }
 
 .fire-bg {
-  background-color: #f44336;
-} /* Red */
+  background-color: #f44336; /* Red */
+  box-shadow: 0 0 40px rgba(244, 67, 54, 0.5);
+}
+
 .water-bg {
-  background-color: #2196f3;
-} /* Blue */
+  background-color: #2196f3; /* Blue */
+  box-shadow: 0 0 40px rgba(33, 150, 243, 0.5);
+}
+
 .grass-bg {
-  background-color: #4caf50;
-} /* Green */
+  background-color: #4caf50; /* Green */
+  box-shadow: 0 0 40px rgba(76, 175, 80, 0.5);
+}
+
 .electric-bg {
-  background-color: #ffeb3b;
-} /* Yellow */
+  background-color: #ffeb3b; /* Yellow */
+  box-shadow: 0 0 40px rgba(255, 235, 59, 0.5);
+}
+
 .psychic-bg {
-  background-color: #9c27b0;
-} /* Purple */
+  background-color: #9c27b0; /* Purple */
+  box-shadow: 0 0 40px rgba(156, 39, 176, 0.5);
+}
+
 .ice-bg {
-  background-color: #03a9f4;
-} /* Light Blue */
+  background-color: #03a9f4; /* Light Blue */
+  box-shadow: 0 0 40px rgba(3, 169, 244, 0.5);
+}
+
 .dragon-bg {
-  background-color: #673ab7;
-} /* Deep Purple */
+  background-color: #673ab7; /* Deep Purple */
+  box-shadow: 0 0 40px rgba(103, 58, 183, 0.5);
+}
+
 .dark-bg {
-  background-color: #212121;
-} /* Dark Gray */
+  background-color: #212121; /* Dark Gray */
+  box-shadow: 0 0 40px rgba(33, 33, 33, 0.5);
+}
+
 .fairy-bg {
-  background-color: #f06292;
-} /* Light Pink */
+  background-color: #f06292; /* Light Pink */
+  box-shadow: 0 0 40px rgba(240, 98, 146, 0.5);
+}
+
 .normal-bg {
-  background-color: #9e9e9e;
-} /* Gray */
+  background-color: #9e9e9e; /* Gray */
+  box-shadow: 0 0 40px rgba(158, 158, 158, 0.5);
+}
+
 .bug-bg {
-  background-color: #8bc34a;
-} /* Light Green */
+  background-color: #8bc34a; /* Light Green */
+  box-shadow: 0 0 40px rgba(139, 195, 74, 0.5);
+}
+
 .ghost-bg {
-  background-color: #9e9e9e;
-} /* Gray */
+  background-color: #9e9e9e; /* Gray */
+  box-shadow: 0 0 40px rgba(158, 158, 158, 0.5);
+}
+
 .fighting-bg {
-  background-color: #e91e63;
-} /* Pink */
+  background-color: #e91e63; /* Pink */
+  box-shadow: 0 0 40px rgba(233, 30, 99, 0.5);
+}
+
 .poison-bg {
-  background-color: #9c27b0;
-} /* Purple */
+  background-color: #9c27b0; /* Purple */
+  box-shadow: 0 0 40px rgba(156, 39, 176, 0.5);
+}
+
 .rock-bg {
-  background-color: #607d8b;
-} /* Slate Gray */
+  background-color: #607d8b; /* Slate Gray */
+  box-shadow: 0 0 40px rgba(96, 125, 139, 0.5);
+}
+
 .ground-bg {
-  background-color: #795548;
-} /* Brown */
+  background-color: #795548; /* Brown */
+  box-shadow: 0 0 40px rgba(121, 85, 72, 0.5);
+}
+
 .steel-bg {
-  background-color: #607d8b;
-} /* Steel Gray */
+  background-color: #607d8b; /* Steel Gray */
+  box-shadow: 0 0 40px rgba(96, 125, 139, 0.5);
+}
+
 .flying-bg {
-  background-color: #00bcd4;
-} /* Cyan */
+  background-color: #00bcd4; /* Cyan */
+  box-shadow: 0 0 40px rgba(0, 188, 212, 0.5);
+}

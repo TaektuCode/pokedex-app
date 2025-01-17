@@ -27,10 +27,16 @@ const getPokemonCard = (pokemon) => {
 
   return `
     <div class="poke_card ${backgroundClass}" id="pokemon-${pokemon.id}">
-      <img src="${pokemon.picture}" alt="${pokemon.name}" />
-      <h3>${pokemon.name}</h3>
-      <p>ID: ${pokemon.id}</p>
-      <p>Types: ${pokemon.types.join(", ")}</p>
+      <h3 class="poke_card--name">${pokemon.name}</h3>
+      <img class="poke_card--img" src="${pokemon.picture}" alt="${
+    pokemon.name
+  }" />
+      <p class="poke_card--id">#${pokemon.id}</p>
+      <div class="poke_card--types-section">
+      <div class="poke_card--types-box">${getPokemonTypeIcons(
+        pokemon.types,
+      )}</div>
+      </div>
     </div>
   `;
 };
@@ -63,11 +69,14 @@ const getPokemonOverlay = (pokemon, pokemonId) => {
 
   return `
     <div id="overlay" class="overlay">
-      <div id="overlay-content" class="overlay-content ${backgroundClass}">
-        <h2>${pokemon.name}</h2>
-        <img src="${pokemon.picture}" alt="${pokemon.name}">
-        <p>ID: ${pokemon.id}</p>
-        <p>Types: ${pokemon.types.join(", ")}</p>
+      <div id="overlayContent" class="overlay_content ${backgroundClass}">
+        <div class="overlay_content--header">
+        <h2 class="overlay_content--heading">${pokemon.name}</h2>
+        <p class="overlay_content--id">#${pokemon.id}</p>
+        </div>
+        <img class="overlay_content--img" src="${pokemon.picture}" alt="${
+    pokemon.name
+  }">
 
         <!-- Tabs -->
         <div class="tabs">
@@ -88,11 +97,56 @@ const getPokemonOverlay = (pokemon, pokemonId) => {
             <p><strong>Defense:</strong> ${pokemon.stats.defense}</p>
           </div>
         </div>
-
-        <button id="prevPokemon">Previous</button>
-        <button id="nextPokemon">Next</button>
-        <button id="closeOverlay">Close</button>
+        <div class="btn_box">
+        <button id="prevPokemon" class="btn_change" >
+        <img src="../assets/img/circle-left.svg" alt="button arrow left">
+        </button>
+        <button id="nextPokemon" class="btn_change">
+        <img src="../assets/img/circle-right.svg" alt="button arrow right">
+        </button>
+        </div>
       </div>
+    </div>
+  `;
+};
+
+const getPokemonTypeIcons = (types) => {
+  const typeIcons = {
+    fire: "./assets/type_icons/fire.svg",
+    water: "./assets/type_icons/water.svg",
+    grass: "./assets/type_icons/grass.svg",
+    electric: "./assets/type_icons/electric.svg",
+    psychic: "./assets/type_icons/psychic.svg",
+    ice: "./assets/type_icons/ice.svg",
+    dragon: "./assets/type_icons/dragon.svg",
+    dark: "./assets/type_icons/dark.svg",
+    fairy: "./assets/type_icons/fairy.svg",
+    normal: "./assets/type_icons/normal.svg",
+    bug: "./assets/type_icons/bug.svg",
+    ghost: "./assets/type_icons/ghost.svg",
+    fighting: "./assets/type_icons/fighting.svg",
+    poison: "./assets/type_icons/poison.svg",
+    rock: "./assets/type_icons/rock.svg",
+    ground: "./assets/type_icons/ground.svg",
+    steel: "./assets/type_icons/steel.svg",
+    flying: "./assets/type_icons/flying.svg",
+  };
+
+  // Generate HTML for icons
+  return types
+    .map(
+      (type) =>
+        `<img src="${typeIcons[type]}" alt="${type}" class="poke_card--type-icon" />`,
+    )
+    .join("");
+};
+
+// Add loading screen HTML to the template
+const getLoadingScreen = () => {
+  return `
+    <div id="loadingScreen" class="loading-screen">
+      <div class="spinner"></div>
+      <p>Loading...</p>
     </div>
   `;
 };

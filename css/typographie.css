@@ -9,3 +9,36 @@
   font-family: var(--font-secondary);
   font-style: italic;
 }
+
+/* Poke Card */
+.poke_card {
+  font-family: var(--font-primary);
+}
+
+.poke_card--id {
+  font-family: var(--font-secondary);
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+/* Overlay Content */
+.overlay_content--heading {
+  font-family: var(--font-primary);
+  font-size: 2.5rem;
+}
+
+.overlay_content--id {
+  font-family: var(--font-secondary);
+  font-size: 1.25rem;
+}
+
+.tab-pane.active p {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+}
+
+/* Footer */
+.footer_box {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+}

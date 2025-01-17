@@ -29,7 +29,6 @@ const fetchPokemonDetails = async (results) => {
   }
 
   allPokemons = pokemonDetails;
-  console.log("All pokemon data fetched for search:", allPokemons);
 };
 
 const fetchPokemonDetailsByUrl = async (url) => {
@@ -45,11 +44,11 @@ const fetchPokemonDetailsByUrl = async (url) => {
     height: details.height * 100, // height in cm
     abilities: details.abilities.map((abilityInfo) => abilityInfo.ability.name),
     stats: {
-      hp: details.stats.find((stat) => stat.stat.name === "hp")?.base_stat,
+      hp: details.stats.find((stat) => stat.stat.name === "hp").base_stat,
       attack: details.stats.find((stat) => stat.stat.name === "attack")
-        ?.base_stat,
+        .base_stat,
       defense: details.stats.find((stat) => stat.stat.name === "defense")
-        ?.base_stat,
+        .base_stat,
     },
   };
 };
@@ -57,20 +56,24 @@ const fetchPokemonDetailsByUrl = async (url) => {
 // Fetch pokemon Data for rendering
 const getPokemonData = async function (limit, offset) {
   try {
+    // Show loading screen
+    showLoadingScreen(true);
     if (offset >= maxPokemonID) {
-      console.log("No more pokemon to fetch.");
       return;
     }
 
-    const pokemonLimit = Math.min(limit, maxPokemonID - offset);
+    const pokemonLimit = Math.min(limit, maxPokemonID - offset); // f.e. (100, 90 - 50) -> pokemonLimit = 40
     const response = await fetchPokemonData(pokemonLimit, offset);
     const pokemonDetails = await processPokemonData(response.results);
+    //allRenderedPokemons = allRenderedPokemons.concat(pokemonDetails);
     allRenderedPokemons = [...allRenderedPokemons, ...pokemonDetails];
-    console.log("Rendered pokemon:", allRenderedPokemons);
     renderPokemonCards(pokemonDetails, offset === 0);
   } catch (error) {
     console.error("Error fetching pokemon data:", error);
   }
+
+  // Hide loading screen after fetch completes (also hide when error)
+  showLoadingScreen(false);
 };
 
 const fetchPokemonData = async (pokemonLimit, offset) => {
@@ -86,6 +89,19 @@ const processPokemonData = async (results) => {
     pokemonDetails.push(details);
   }
   return pokemonDetails;
+};
+
+// Show or hide the loading screen
+const showLoadingScreen = (show) => {
+  const loadingScreen = document.getElementById("loadingScreen");
+  if (loadingScreen) {
+    loadingScreen.style.display = show ? "flex" : "none";
+  } else {
+    // If the loading screen is not in the DOM, add it
+    document.body.insertAdjacentHTML("beforeend", getLoadingScreen());
+    const loadingScreen = document.getElementById("loadingScreen");
+    loadingScreen.style.display = show ? "flex" : "none";
+  }
 };
 
 // Render pokemon Cards
@@ -138,7 +154,6 @@ const handleSearch = (event) => {
   const filteredPokemon = allPokemons.filter((pokemon) =>
     pokemon.name.toLowerCase().startsWith(searchInput),
   );
-  console.log("Search Results:", filteredPokemon);
   // Render filtered pokemons
   renderPokemonCards(filteredPokemon, true);
 };
@@ -164,7 +179,6 @@ const showPokemonDetails = (pokemonId) => {
 
 const setupOverlayEventListeners = (pokemonId) => {
   const overlay = document.getElementById("overlay");
-  setupCloseOverlayButton(overlay);
   setupNextPreviousButtons(overlay, pokemonId); // Next/Previous buttons
   setupOverlayClickToClose(overlay); // Close overlay on click outside card
   setupTabSwitching(); // Add event listener for tabs
@@ -197,33 +211,20 @@ const switchTab = (activeTab, inactiveTab, activeContent, inactiveContent) => {
   inactiveContent.classList.remove("active");
 };
 
-const setupCloseOverlayButton = (overlay) => {
-  const closeOverlayButton = overlay.querySelector("#closeOverlay");
-  closeOverlayButton.addEventListener("click", () => {
-    // Close overlay and enable scrolling
-    overlay.remove();
-    document.body.style.overflow = "";
-  });
-};
-
 const setupNextPreviousButtons = (overlay, pokemonId) => {
   const nextButton = overlay.querySelector("#nextPokemon");
   const prevButton = overlay.querySelector("#prevPokemon");
 
   nextButton.addEventListener("click", () => {
-    // Show details for the next pokemon in overlay
-    const nextPokemonId = pokemonId + 1;
-    if (nextPokemonId <= maxPokemonID) {
-      showPokemonDetails(nextPokemonId);
-    }
+    // Show details for the next pokemon in overlay, and if it is on the last (151) , go to the first (1)
+    const nextPokemonId = pokemonId >= maxPokemonID ? 1 : pokemonId + 1;
+    showPokemonDetails(nextPokemonId);
   });
 
+  // vice versa
   prevButton.addEventListener("click", () => {
-    // Show details for the previous pokemon in overlay
-    const prevPokemonId = pokemonId - 1;
-    if (prevPokemonId > 0) {
-      showPokemonDetails(prevPokemonId);
-    }
+    const prevPokemonId = pokemonId <= 1 ? maxPokemonID : pokemonId - 1;
+    showPokemonDetails(prevPokemonId);
   });
 };
 
@@ -246,6 +247,8 @@ const setupOverlayClickToClose = (overlay) => {
 
 // Wait for the DOM content to load
 document.addEventListener("DOMContentLoaded", async () => {
+  showLoadingScreen(true);
+
   await fetchAllPokemonData();
   getPokemonData(initialLimit, offset);
   offset = initialLimit;
