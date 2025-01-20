@@ -99,10 +99,10 @@ const getPokemonOverlay = (pokemon, pokemonId) => {
         </div>
         <div class="btn_box">
         <button id="prevPokemon" class="btn_change" >
-        <img src="../assets/img/circle-left.svg" alt="button arrow left">
+        <img src="./assets/img/circle-left.svg" alt="button arrow left">
         </button>
         <button id="nextPokemon" class="btn_change">
-        <img src="../assets/img/circle-right.svg" alt="button arrow right">
+        <img src="./assets/img/circle-right.svg" alt="button arrow right">
         </button>
         </div>
       </div>

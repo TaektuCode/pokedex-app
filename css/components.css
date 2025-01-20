@@ -98,6 +98,8 @@ input {
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  position: absolute;
+  bottom: 8.5rem;
 }
 
 .load_more_btn:hover {
